@@ -6,18 +6,6 @@ Resource                              api_keywords.robot
 Resource                              ../variables/common_variables.robot
 
 *** Keywords ***
-Send POST Request
-    [Arguments]       ${endpoint}        ${data}
-    Create Session    petstore           ${BASE_URL}    verify=${FALSE}
-    ${response}=      POST On Session    petstore       ${endpoint}         json=${data}
-    RETURN            ${response}
-
-Send GET Request
-    [Arguments]       ${endpoint}        ${params}=${NONE}
-    Create Session    petstore           ${BASE_URL}     verify=${FALSE}
-    ${response}=      GET On Session     petstore        ${endpoint}        params=${params}
-    RETURN            ${response}
-
 Create Pet
     [Arguments]       ${name}                ${status}
     ${category}=      Create Dictionary      id=1        name=Cats
