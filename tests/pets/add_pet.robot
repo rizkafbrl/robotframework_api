@@ -1,6 +1,5 @@
 *** Settings ***
 Resource          ../../resources/keywords/pet_keywords.robot
-Resource          ../../resources/keywords/common_keywords.robot
 
 *** Variables ***
 ${PET_STATUS}     available

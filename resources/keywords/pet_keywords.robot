@@ -2,10 +2,40 @@
 Library                               RequestsLibrary
 Library                               Collections
 Library                               OperatingSystem
-Resource                              api_keywords.robot
 Resource                              ../variables/common_variables.robot
 
 *** Keywords ***
+# Keywords from common_keywords.robot
+Setup API Session
+    [Documentation]    Sets up the API session for the Pet Store API.
+    Create Session     petstore    ${BASE_URL}    verify=${FALSE}
+    Disable Warnings
+
+Disable Warnings
+    [Documentation]    Disables insecure request warnings.
+    Evaluate    __import__('urllib3').disable_warnings()    modules=urllib3
+
+Get Json Value
+    [Arguments]        ${json_data}    ${json_path}
+    [Documentation]    Extracts values from JSON data using a JSONPath expression.
+    ${matches}=        Evaluate    [match.value for match in __import__('jsonpath_ng').parse("${json_path}").find(${json_data})]
+    Run Keyword If     len(${matches}) == 0    Fail    No matches found for JSONPath: ${json_path}
+    RETURN             ${matches}
+
+# Keywords from api_keywords.robot
+Send POST Request
+    [Arguments]     ${endpoint}    ${data}
+    Setup API Session
+    ${response}=    POST On Session    petstore    ${endpoint}    json=${data}
+    RETURN    ${response}
+
+Send GET Request
+    [Arguments]     ${endpoint}    ${params}=${NONE}
+    Setup API Session
+    ${response}=    GET On Session    petstore    ${endpoint}    params=${params}
+    RETURN          ${response}
+
+# Existing keywords in pet_keywords.robot
 Create Pet
     [Arguments]       ${name}                ${status}
     ${category}=      Create Dictionary      id=1        name=Cats
