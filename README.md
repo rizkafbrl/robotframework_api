@@ -51,6 +51,8 @@ pip install robotframework-requests
 pip install RESTinstance
 ```
 
+![Setup pip install](https://raw.githubusercontent.com/rizkafbrl/robotframework_api/refs/heads/main/images/setup%20pip%20install.PNG)
+
 ## Running the Tests
 
 To run all the pet-related tests:
@@ -58,6 +60,8 @@ To run all the pet-related tests:
 ```bash
 robot --outputdir results tests/pets/
 ```
+
+![How to run](https://raw.githubusercontent.com/rizkafbrl/robotframework_api/refs/heads/main/images/how%20to%20run.PNG)
 
 To run specific test suites:
 
