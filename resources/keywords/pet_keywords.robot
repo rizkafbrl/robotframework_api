@@ -34,15 +34,23 @@ Send GET Request
     RETURN          ${response}
 
 Create Pet
-    [Arguments]       ${name}                ${status}
-    ${category}=      Create Dictionary      id=1        name=Cats
+    [Arguments]       ${petName}                ${petStatus}      ${petID}
+    # ${category}=      Create Dictionary      id=1        name=Cats
     ${payload}=       Create Dictionary    
-    ...               name=${name}    
-    ...               status=${status}
-    ...               id=1234
-    ...               category=${category}
-    ${response}=      Send POST Request       ${PET_ENDPOINT}            ${payload}
-    Should Be Equal As Numbers                ${response.status_code}    200
+    ...               name=${petName}    
+    ...               status=${petStatus}
+    ...               id=${petID}
+    # ...               category=${category}
+    ${response}=               Send POST Request       ${PET_ENDPOINT}            ${payload}
+    Should Be Equal As Numbers                         ${response.status_code}    200
+    ${json_response}=          Set Variable            ${response.json()}
+    ${response_pet_id}=        Set Variable            ${json_response}[id]
+    ${response_pet_name}=      Set Variable            ${json_response}[name]
+    ${response_pet_status}=    Set Variable            ${json_response}[status]
+    Should Be Equal As Integers    ${response_pet_id}        ${petID}         Pet ID does not match
+    Should Be Equal As Strings     ${response_pet_name}      ${petName}       Pet Name is empty
+    Should Be Equal As Strings     ${response_pet_status}    ${petStatus}     Pet Status is empty
+  
 
 Verify Pet Created
     [Arguments]       ${name}    ${status}
@@ -68,7 +76,7 @@ Get Pet By ID
 Verify Pets Status
     [Arguments]        ${response}       ${expected_status}
     ${pets}=           Get Json Value    ${response.json()}    $[*]
-    FOR    ${pet}    IN    @{pets}
+    FOR     ${pet}    IN    @{pets}
         Should Be Equal As Strings    ${pet}[status]    ${expected_status}
     END
 
