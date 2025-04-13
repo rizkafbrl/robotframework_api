@@ -105,22 +105,103 @@ These tests can be integrated into CI/CD pipelines. The command to run in CI env
 robot --outputdir results tests/pets/
 ```
 
-## GitHub Actions
+## GitHub Actions Workflow
 
-This project is configured with GitHub Actions for automated testing. The workflow automatically runs all the Robot Framework tests when code is pushed or pull requests are created against the main branch.
+This repository includes a GitHub Actions workflow to automate the execution of Robot Framework API tests. The workflow is defined in `.github/workflows/robot-tests.yml`.
 
-### Workflow Configuration
+### Workflow Details
 
-The workflow is defined in `.github/workflows/robot-tests.yml` and does the following:
+- **Trigger Events**:
+  - Runs on `push` events to the `main` or `master` branches.
+  - Runs on `pull_request` events targeting the `main` or `master` branches.
 
-- **Trigger Events**: Runs on push and pull requests to main/master branches
-- **Environment**: Uses Ubuntu latest with Python 3.9
-- **Steps**:
-  1. Checks out the repository code
-  2. Sets up Python environment
-  3. Installs all dependencies from requirements.txt
-  4. Runs all Robot Framework tests in the tests directory
-  5. Uploads test results as artifacts
+- **Job Configuration**:
+  - **Environment**: The tests are executed on `ubuntu-22.04` with Python 3.9.
+  - **Steps**:
+    1. **Checkout Source**: Clones the repository.
+    2. **Set Up Python**: Installs Python 3.9 and caches dependencies using `pip`.
+    3. **Install Dependencies**: Installs required Python packages from `requirements.txt`.
+    4. **Run Robot Framework Tests**: Executes the tests located in the `tests/` directory and stores the results in the `results/` directory.
+    5. **Debugging**:
+       - Displays environment information and lists files in the working directory.
+       - Checks the contents of the `results/` directory after the tests are executed.
+       - Prints environment variables for debugging purposes.
+    6. **Upload Test Results**: Uploads the test results as an artifact named `robot-results`.
+
+### How to Use
+
+1. Ensure your `requirements.txt` file includes all necessary dependencies for running Robot Framework tests.
+2. Push changes to the `main` or `master` branch, or create a pull request targeting these branches.
+3. The workflow will automatically run and execute the tests.
+4. Test results can be downloaded from the "Artifacts" section of the workflow run in GitHub Actions.
+
+### Example Workflow File
+
+Below is the workflow file used in this repository:
+
+```yaml
+name: Robot Framework API Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+
+    permissions:
+      contents: read
+      actions: read
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v3
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        cache: 'pip'
+
+    - name: Show environment info (basic debug)
+      run: |
+        echo "Python version: $(python --version)"
+        echo "Working directory: $(pwd)"
+        echo "Listing root files:"
+        ls -lah
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r [requirements.txt](http://_vscodecontentref_/1)
+
+    - name: Run Robot Framework tests
+      run: |
+        mkdir -p results
+        python -m robot --outputdir results tests/
+
+    - name: Debug result directory
+      run: |
+        echo "Checking contents of 'results/' directory:"
+        if [ -d "results" ]; then
+          ls -lah results
+        else
+          echo "'results' directory not found!"
+          exit 1
+        fi
+
+    - name: Show environment variables (hardcore debug)
+      run: printenv
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: robot-results
+        path: results/
+```
 
 ### Viewing Test Results
 
