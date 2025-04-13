@@ -5,7 +5,6 @@ Library                               OperatingSystem
 Resource                              ../variables/common_variables.robot
 
 *** Keywords ***
-# Keywords from common_keywords.robot
 Setup API Session
     [Documentation]    Sets up the API session for the Pet Store API.
     Create Session     petstore    ${BASE_URL}    verify=${FALSE}
@@ -22,7 +21,6 @@ Get Json Value
     Run Keyword If     len(${matches}) == 0    Fail    No matches found for JSONPath: ${json_path}
     RETURN             ${matches}
 
-# Keywords from api_keywords.robot
 Send POST Request
     [Arguments]     ${endpoint}    ${data}
     Setup API Session
@@ -35,7 +33,6 @@ Send GET Request
     ${response}=    GET On Session    petstore    ${endpoint}    params=${params}
     RETURN          ${response}
 
-# Existing keywords in pet_keywords.robot
 Create Pet
     [Arguments]       ${name}                ${status}
     ${category}=      Create Dictionary      id=1        name=Cats
