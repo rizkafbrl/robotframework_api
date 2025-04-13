@@ -27,14 +27,13 @@ jobs:
       run: |
         # Create results directory if it doesn't exist
         mkdir -p results
-        
+
         # Run all tests and output results to the results directory
         python -m robot --outputdir results tests/
 
     - name: Upload test results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v3.1.0
       if: always()  # Upload results even if tests fail
       with:
         name: robot-results
         path: results/
-
