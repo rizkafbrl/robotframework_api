@@ -35,12 +35,10 @@ Send GET Request
 
 Create Pet
     [Arguments]       ${petName}                ${petStatus}      ${petID}
-    # ${category}=      Create Dictionary      id=1        name=Cats
     ${payload}=       Create Dictionary    
     ...               name=${petName}    
     ...               status=${petStatus}
     ...               id=${petID}
-    # ...               category=${category}
     ${response}=               Send POST Request       ${PET_ENDPOINT}            ${payload}
     Should Be Equal As Numbers                         ${response.status_code}    200
     ${json_response}=          Set Variable            ${response.json()}
