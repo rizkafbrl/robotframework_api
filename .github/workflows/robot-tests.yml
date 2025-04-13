@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04  # Downgraded from ubuntu-latest to ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v3
@@ -25,14 +25,11 @@ jobs:
 
     - name: Run Robot Framework tests
       run: |
-        # Create results directory if it doesn't exist
         mkdir -p results
-
-        # Run all tests and output results to the results directory
         python -m robot --outputdir results tests/
 
     - name: Upload test results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v3.1.3  # Explicit version
       with:
         name: robot-results
         path: results/
