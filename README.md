@@ -105,6 +105,35 @@ These tests can be integrated into CI/CD pipelines. The command to run in CI env
 robot --outputdir results tests/pets/
 ```
 
+## GitHub Actions
+
+This project is configured with GitHub Actions for automated testing. The workflow automatically runs all the Robot Framework tests when code is pushed or pull requests are created against the main branch.
+
+### Workflow Configuration
+
+The workflow is defined in `.github/workflows/robot-tests.yml` and does the following:
+
+- **Trigger Events**: Runs on push and pull requests to main/master branches
+- **Environment**: Uses Ubuntu latest with Python 3.9
+- **Steps**:
+  1. Checks out the repository code
+  2. Sets up Python environment
+  3. Installs all dependencies from requirements.txt
+  4. Runs all Robot Framework tests in the tests directory
+  5. Uploads test results as artifacts
+
+### Viewing Test Results
+
+After a workflow run completes:
+
+1. Go to your GitHub repository
+2. Navigate to the Actions tab
+3. Click on the relevant workflow run
+4. Under "Artifacts", download the "robot-results" artifact
+5. Extract the zip file and open `report.html` or `log.html` in a browser
+
+The test artifacts are saved even if the tests fail, making it easier to diagnose issues.
+
 ## Troubleshooting
 
 If you encounter any issues:
