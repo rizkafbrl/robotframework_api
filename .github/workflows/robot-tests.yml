@@ -1,0 +1,40 @@
+name: Robot Framework API Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Robot Framework tests
+      run: |
+        # Create results directory if it doesn't exist
+        mkdir -p results
+        
+        # Run all tests and output results to the results directory
+        python -m robot --outputdir results tests/
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()  # Upload results even if tests fail
+      with:
+        name: robot-results
+        path: results/
+
